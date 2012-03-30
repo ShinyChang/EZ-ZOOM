@@ -6,6 +6,7 @@
     "default_icon": "icon.png"
   },
   "background_page": "background.html",
+  "popup": "popup.html",
   "icons": {
       "128": "icon.png",
       "48": "icon.png"
