@@ -80,8 +80,7 @@ ezZoom.indexedDB.deleteDomainZoomLevel = function(id) {
 };
 
 ezZoom.indexedDB.getAllDomainZoomLevelItems = function() {
-    var zoomContainer = document.getElementById("domainZoomLevelContainer");
-    zoomContainer.innerHTML = "";
+	$("#domainZoomLevelContainer tbody").html("");	//clear tbody
 
     var db = ezZoom.indexedDB.db;
     var trans = db.transaction(["domainZoomLevel"], IDBTransaction.READ_WRITE);
@@ -100,6 +99,8 @@ ezZoom.indexedDB.getAllDomainZoomLevelItems = function() {
         result.
         continue();
     };
+    
+    
 
     cursorRequest.onerror = ezZoom.indexedDB.onerror;
 };
@@ -115,24 +116,12 @@ ezZoom.indexedDB.getDomainZoomLevel = function(domain, callback) {
 };
 
 function renderDomainZoomLevel(row) {
-    var zoomContainer = document.getElementById("domainZoomLevelContainer");
-    var li = document.createElement("li");
-    var a = document.createElement("a");
-    var domain = document.createElement("span");
-    var zoomLevel = document.createElement("span");
-    domain.innerHTML = row.key;
-    zoomLevel.innerHTML = row.value;
-
-    a.addEventListener("click", function() {
-        ezZoom.indexedDB.deleteDomainZoomLevel(domain.innerHTML);
-    }, false);
-
-    a.textContent = " [Delete]";
-	a.title = "Delete : " +domain.innerHTML;
-    li.appendChild(domain);
-    li.appendChild(zoomLevel);
-    li.appendChild(a);
-    zoomContainer.appendChild(li)
+	
+	$("#domainZoomLevelContainer tbody").append('<tr><td>'+row.key+'</td><td>'+row.value+'</td><td><i class="icon-remove"></i></td></tr>');
+	$("#domainZoomLevelContainer i:last").click(function(){
+		var domain = $(this).parent('td').prevAll("td").last().html();
+		ezZoom.indexedDB.deleteDomainZoomLevel(domain);
+	});
 };
 
 function addDomainZoomLevel(domain, zoomLevel) {
@@ -140,8 +129,12 @@ function addDomainZoomLevel(domain, zoomLevel) {
 };
 
 
+
+
 function init() {
     ezZoom.indexedDB.open();
 };
 
 window.addEventListener("DOMContentLoaded", init, false);
+
+
