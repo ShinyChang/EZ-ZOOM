@@ -1,6 +1,6 @@
 .zoomBtn {
 	float:left;
-	width: 34px;
+	width: 27px;
 	height: 27px;
 	border: 1px;
 	position: relative;
@@ -21,7 +21,7 @@
 	position:relative; 
 	cursor:pointer;
 	border:1px solid #333;
-	width:200px;
+	width:150px;
 	float:left; 
 	clear:right;
 	margin-top:10px;
@@ -67,5 +67,19 @@
 	width:50px;
 	-moz-border-radius:5px; 
 	-webkit-border-radius:5px; 		
+}
+
+
+body {
+    width: 400px;
+    color: #222;
+    font: 14px Arial;
+}
+body a {
+    color: #3D5C9D;
+    text-decoration: none;
+}
+span {
+    margin: 0px 5px 0px 5px;
 }
 

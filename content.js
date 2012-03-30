@@ -1,78 +1,89 @@
-window.addEventListener("keydown", function(event) { 
+window.addEventListener("keydown", function(event) {
 
-	var element;
-	if (event.target) {
-		element = event.target;
-	} else if (event.srcElement) {
-		element = event.srcElement;
-	}
+    var element;
+    if(event.target) {
+        element = event.target;
+    } else if(event.srcElement) {
+        element = event.srcElement;
+    }
 
-	if (element.nodeType == 3) {
-		element = element.parentNode;
-	}
-	
-	//without input tag
-	if (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') {
-		return;
-	}
+    if(element.nodeType == 3) {
+        element = element.parentNode;
+    }
 
+    //without input tag
+    if(element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') {
+        return;
+    }
 
-	//init localstorage["EZZOOM"]
-	if(localStorage.getItem("EZZOOM") != null) {
-		zoom = localStorage.getItem("EZZOOM");	
-	} else {
-		zoom = document.getElementsByTagName('html')[0].style.zoom;
-		zoom = zoom.substring(0, zoom.length - 1);
-		if (zoom == '') {
-			zoom = 100;
-		}
-		localStorage.setItem("EZZOOM", zoom);
-	}
+    if(event.keyCode == 109 || event.keyCode == 189) {// -
+        setZoomLevelForContent(parseInt(getZoomLevelFromContent()) - 10);
+        sendZoomLevelToBackground(getZoomLevelFromContent());
+    } else if(event.keyCode == 106 || event.keyCode == 56) {// *
+        setZoomLevelForContent(100);
+        sendZoomLevelToBackground(getZoomLevelFromContent());
+    } else if(event.keyCode == 107 || event.keyCode == 187) {// +
+        setZoomLevelForContent(parseInt(getZoomLevelFromContent()) + 10);
+        sendZoomLevelToBackground(getZoomLevelFromContent());
+    }
 
-	//key event handle
-	if (event.keyCode == 109 || event.keyCode == 189 ){// -
-		zoom -= 10;
-		if (zoom < 10) {
-			zoom = 10;
-		}
-		document.getElementsByTagName('html')[0].style.zoom = zoom + '%';
-		localStorage.setItem("EZZOOM", zoom);
-	}
-	else if (event.keyCode == 106 || event.keyCode == 56 ){// *
-		zoom = 100;
-		document.getElementsByTagName('html')[0].style.zoom = '100%';
-		localStorage.setItem("EZZOOM", zoom);
-	}
-	else if (event.keyCode == 107 || event.keyCode == 187 ){// +
-		zoom =  parseInt(zoom) +  parseInt(10);
-		if (zoom > 300) {
-			zoom = 300;
-		}
-		document.getElementsByTagName('html')[0].style.zoom = zoom + '%';
-		localStorage.setItem("EZZOOM", zoom);
-	}
-
-	//send zoom info to bg
-	chrome.extension.sendRequest({method: "getZoom", key: localStorage.getItem("EZZOOM")}, function(response) {
-		console.log("EZ ZOOM: " + response.status);
-	});
 });
+updateZoomLevelFromBackground();
 
-//set default zoom size
-document.getElementsByTagName('html')[0].style.zoom = localStorage.getItem("EZZOOM") + '%';
-
-//send zoom info to bg
-chrome.extension.sendRequest({method: "getZoom", key: localStorage.getItem("EZZOOM")}, function(response) {
-	console.log("EZ ZOOM:"+response.status);
-});
-
-
-//request from bg
+//request from bg (when tab switched)
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-	console.log("get from bg");
-    if (request.method == "getStatus") {
-		sendResponse({status: localStorage.getItem("EZZOOM")});
-    } else {
-		sendResponse({}); // snub them.
-	}
+    if(request.method == "setZoomLevel") {
+        console.log(request.zoomLevel);
+        setZoomLevelForContent(request.zoomLevel);
+        localStorage.setItem("EZZOOM", request.zoomLevel);
+        sendResponse({
+            status : null
+        });
+
+        sendZoomLevelToBackground(getZoomLevelFromContent());
+    }
 });
+function sendZoomLevelToBackground(level) {
+    chrome.extension.sendRequest({
+        method : "setZoomLevel",
+        key : level
+    }, function(response) {
+        console.log("setZoomLevel:" + response.status);
+    });
+};
+
+function getZoomLevelFromBackground(callback) {
+    chrome.extension.sendRequest({
+        method : "getZoomLevel"
+    }, function(response) {
+        console.log("getZoomLevel:" + response.status);
+        callback(response.status);
+    });
+};
+
+function updateZoomLevelFromBackground() {
+    getZoomLevelFromBackground(function(result) {
+        if(result === undefined) {
+            setZoomLevelForContent("100");
+        } else {
+            setZoomLevelForContent(result);
+        }
+    });
+};
+
+function getZoomLevelFromContent() {
+    console.log("get zoom form content");
+    var z = document.getElementsByTagName('html')[0].style.zoom;
+    z = z.substring(0, z.length - 1);
+    return z;
+};
+
+function setZoomLevelForContent(level) {
+    if(level > 300) {
+        level = 300;
+    } else if(level <10) {
+        level = 10;
+    }
+    console.log("set zoom form content");
+    document.getElementsByTagName('html')[0].style.zoom = level + "%";
+};
