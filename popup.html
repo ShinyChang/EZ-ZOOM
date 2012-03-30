@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-        Remove this if you use the .htaccess -->
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <title>Popup Page</title>
-        <meta name="description" content="" />
-        <meta name="author" content="Shiny" />
-        <meta name="viewport" content="width=device-width; initial-scale=1.0" />
-        <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <script src="jquery.tools.min.js"></script>
-        <link type="text/css" rel="stylesheet" href="style.css" />
-    </head>
-    <body>
-        <div class="zoomBtn" id="zoomInBtn">
-            <img src="left_arrow.png" alt="zoom in">
-        </div>
-        <input type="range" id="zoomlvl" name="zoomlvl" min="10" max="300" value="100" />
-        <div class="zoomBtn" id="zoomOutBtn">
-            <img src="right_arrow.png" alt="zoom out">
-        </div>
-        <div class="zoomBtn" id="zoomResetBtn">
-            <img src="reset.png" alt="reset">
-        </div>
-        <script type="text/javascript" src="popup.js"></script>
-        <div id="debug"></div>
-    </body>
+	<head>
+		<meta charset="utf-8" />
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>Popup Page</title>
+		<meta name="description" content="" />
+		<meta name="author" content="Shiny" />
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link type="text/css" rel="stylesheet" href="css/style.css" />
+		<link type="text/css" rel="stylesheet" href="css/popup.css" />
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+		<script type="text/javascript" src="js/jquery.tools.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<button id="zoomInBtn" class="btn" ><i class="icon-zoom-out"></i></button>
+		<input type="range" id="zoomlvl" name="zoomlvl" min="10" max="300" value="100" />
+		<button id="zoomOutBtn" class="btn" ><i class="icon-zoom-in"></i></button>
+		<button id="zoomResetBtn" class="btn" ><i class="icon-refresh"></i></button>
+		<script type="text/javascript" src="js/popup.js"></script>
+		<div id="debug"></div>
+	</body>
 </html>
