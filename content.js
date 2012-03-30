@@ -27,7 +27,7 @@ window.addEventListener("keydown", function(event) {
 		localStorage.setItem("EZZOOM", zoom);
 	}
 
-	if (event.keyCode == 109 ){// -
+	if (event.keyCode == 109 || event.keyCode == 189 ){// -
 		zoom -= 10;
 		if (zoom < 10) {
 			zoom = 10;
@@ -35,12 +35,12 @@ window.addEventListener("keydown", function(event) {
 		document.getElementsByTagName('html')[0].style.zoom = zoom + '%';
 		localStorage.setItem("EZZOOM", zoom);
 	}
-	else if (event.keyCode == 106 ){// *
+	else if (event.keyCode == 106 || event.keyCode == 56 ){// *
 		zoom = 100;
 		document.getElementsByTagName('html')[0].style.zoom = '100%';
 		localStorage.setItem("EZZOOM", zoom);
 	}
-	else if (event.keyCode == 107 ){// +
+	else if (event.keyCode == 107 || event.keyCode == 187 ){// +
 		zoom =  parseInt(zoom) +  parseInt(10);
 		if (zoom > 300) {
 			zoom = 300;

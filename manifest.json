@@ -1,6 +1,6 @@
 {
   "name": "EZ Zoom",
-  "version": "1.2",
+  "version": "1.3",
   "description": "Press + - * can zoom just like Opera.",
   "browser_action": {
     "default_icon": "icon.png"
