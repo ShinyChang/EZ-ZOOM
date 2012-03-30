@@ -11,11 +11,13 @@ window.addEventListener("keydown", function(event) {
 		element = element.parentNode;
 	}
 	
+	//without input tag
 	if (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') {
 		return;
 	}
 
-	var zoom
+
+	//init localstorage["EZZOOM"]
 	if(localStorage.getItem("EZZOOM") != null) {
 		zoom = localStorage.getItem("EZZOOM");	
 	} else {
@@ -27,6 +29,7 @@ window.addEventListener("keydown", function(event) {
 		localStorage.setItem("EZZOOM", zoom);
 	}
 
+	//key event handle
 	if (event.keyCode == 109 || event.keyCode == 189 ){// -
 		zoom -= 10;
 		if (zoom < 10) {
@@ -48,8 +51,28 @@ window.addEventListener("keydown", function(event) {
 		document.getElementsByTagName('html')[0].style.zoom = zoom + '%';
 		localStorage.setItem("EZZOOM", zoom);
 	}
+
+	//send zoom info to bg
+	chrome.extension.sendRequest({method: "getZoom", key: localStorage.getItem("EZZOOM")}, function(response) {
+		console.log("EZ ZOOM: " + response.status);
+	});
 });
 
-window.onload = function() {
-	document.getElementsByTagName('html')[0].style.zoom = localStorage.getItem("EZZOOM") + '%';
-};
+//set default zoom size
+document.getElementsByTagName('html')[0].style.zoom = localStorage.getItem("EZZOOM") + '%';
+
+//send zoom info to bg
+chrome.extension.sendRequest({method: "getZoom", key: localStorage.getItem("EZZOOM")}, function(response) {
+	console.log("EZ ZOOM:"+response.status);
+});
+
+
+//request from bg
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+	console.log("get from bg");
+    if (request.method == "getStatus") {
+		sendResponse({status: localStorage.getItem("EZZOOM")});
+    } else {
+		sendResponse({}); // snub them.
+	}
+});
