@@ -67,7 +67,6 @@ ezZoom.indexedDB.deleteDomainZoomLevel = function(id) {
     var db = ezZoom.indexedDB.db;
     var trans = db.transaction(["domainZoomLevel"], IDBTransaction.READ_WRITE);
     var store = trans.objectStore("domainZoomLevel");
-
     var request = store.
     delete (id);
 
@@ -125,10 +124,11 @@ function renderDomainZoomLevel(row) {
     zoomLevel.innerHTML = row.value;
 
     a.addEventListener("click", function() {
-        ezZoom.indexedDB.deleteDomainZoomLevel(row.key);
+        ezZoom.indexedDB.deleteDomainZoomLevel(domain.innerHTML);
     }, false);
 
     a.textContent = " [Delete]";
+	a.title = "Delete : " +domain.innerHTML;
     li.appendChild(domain);
     li.appendChild(zoomLevel);
     li.appendChild(a);

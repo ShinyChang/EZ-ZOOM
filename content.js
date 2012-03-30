@@ -36,11 +36,10 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
         console.log(request.zoomLevel);
         setZoomLevelForContent(request.zoomLevel);
         localStorage.setItem("EZZOOM", request.zoomLevel);
-        sendResponse({
+        sendZoomLevelToBackground(getZoomLevelFromContent());
+		sendResponse({
             status : null
         });
-
-        sendZoomLevelToBackground(getZoomLevelFromContent());
     }
 });
 function sendZoomLevelToBackground(level) {

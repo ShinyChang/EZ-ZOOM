@@ -5,7 +5,13 @@
   "browser_action": {
     "popup": "popup.html",  
     "default_icon": "icon.png"
-  },
+  }, 
+  "content_scripts": [ {
+      "all_frames": true,
+      "js": [ "content.js" ],
+      "matches": [ "http://*/*", "https://*/*" ],
+      "run_at": "document_start"
+  } ],
   "background_page": "background.html",
   "options_page": "option.html",
 

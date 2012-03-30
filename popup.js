@@ -4,7 +4,6 @@ var zoomObj = $("#zoomlvl").data("rangeinput");
 //set current tab's zoom level
 chrome.extension.getBackgroundPage().getCurrentTabDomain(function(domain) {
     chrome.extension.getBackgroundPage().ezZoom.indexedDB.getDomainZoomLevel(domain, function(result) {
-        document.getElementById("debug").innerHTML = result;
         zoomObj.setValue(result);
     });
 })
@@ -33,6 +32,18 @@ $("#zoomInBtn").click(function(event, value) {
     });
 });
 
+$("#zoomResetBtn").click(function(event, value) {
+    zoomObj.setValue(100);
+    chrome.tabs.getSelected(null, function(tab) {
+        chrome.tabs.sendRequest(tab.id, {
+            method : "setZoomLevel",
+            zoomLevel : "100"
+        }, function(response) {
+            // do not thing
+        });
+    });
+});
+
 $("#zoomOutBtn").click(function(event, value) {
     zoomObj.stepUp(10);
     chrome.tabs.getSelected(null, function(tab) {
@@ -45,10 +56,3 @@ $("#zoomOutBtn").click(function(event, value) {
     });
 });
 
-chrome.tabs.getSelected(null, function(tab) {
-    chrome.tabs.sendRequest(tab.id, {
-        method : "getZoomLevel"
-    }, function(response) {
-        zoomObj.setValue(response.status);
-    });
-});

@@ -1,11 +1,3 @@
-function InsertFunc(tabId, changeInfo, tab) {
-    if(changeInfo.status == "complete") {
-        chrome.tabs.executeScript(null, {
-            file : "content.js"
-        });
-    }
-};
-
 function getCurrentTabDomain(callback) {
     console.log("get current tab\'s domain");
     chrome.tabs.getSelected(null, function(tab) {
@@ -43,6 +35,9 @@ chrome.tabs.onActiveChanged.addListener(function(tabId, selectInfo) {
     chrome.tabs.getSelected(null, function(tab) {
         ezZoom.indexedDB.getDomainZoomLevel(tab.url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1], function(result) {
             console.log("tab zoom level:" + result);
+			if(result === undefined) {
+				result = "100";
+			}
             chrome.browserAction.setBadgeText({
                 text : result
             });
@@ -50,8 +45,6 @@ chrome.tabs.onActiveChanged.addListener(function(tabId, selectInfo) {
     });
 });
 
-// Listen for any changes to the URL of any tab.
-chrome.tabs.onUpdated.addListener(InsertFunc);
 chrome.browserAction.setBadgeText({
     text : "100"
 });

@@ -10,8 +10,9 @@
 	background-image: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
 	-webkit-border-radius: 3px;
 	padding: 0 10px 0 7px;
-	margin-left:10px; 
-	margin-right:10px; 
+	margin-left:5px; 
+	margin-right:5px; 
+	cursor: pointer;
 }
 
 /* slider root element */
@@ -78,8 +79,8 @@ body {
 body a {
     color: #3D5C9D;
     text-decoration: none;
+	cursor: pointer;
 }
 span {
     margin: 0px 5px 0px 5px;
 }
-
