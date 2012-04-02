@@ -5,9 +5,8 @@ function getCurrentTabDomain(callback) {
     });
 };
 
-//request from tabs
-chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-    if(request.method == "setZoomLevel") {
+function requestFromTabs(request, sender, sendResponse) {
+	if(request.method == "setZoomLevel") {
         chrome.browserAction.setBadgeText({
             text : request.key
         });
@@ -27,10 +26,9 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
             });
         });
     }
-});
+};
 
-//tabs active change event
-chrome.tabs.onActiveChanged.addListener(function(tabId, selectInfo) {
+function setZoomOfCurrentTab(tabId, selectInfo) {
     console.log("tab changed");
     chrome.tabs.getSelected(null, function(tab) {
         ezZoom.indexedDB.getDomainZoomLevel(tab.url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1], function(result) {
@@ -42,10 +40,18 @@ chrome.tabs.onActiveChanged.addListener(function(tabId, selectInfo) {
                 text : result
             });
         });
-    });
-});
+    });	
+};
 
-chrome.browserAction.setBadgeText({
-    text : "100"
-});
-console.log("EZ Zoom is ready.");
+function setDefaultZoomOnBadge(){
+	chrome.browserAction.setBadgeText({
+	    text : "100"
+	});
+};
+
+
+function initEzZoom() {
+	chrome.extension.onRequest.addListener(requestFromTabs);	
+	chrome.tabs.onActiveChanged.addListener(setZoomOfCurrentTab);	
+	setDefaultZoomOnBadge();
+};

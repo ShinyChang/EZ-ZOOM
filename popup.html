@@ -11,18 +11,53 @@
 		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/favicon.ico" />
-		<link type="text/css" rel="stylesheet" href="css/style.css" />
-		<link type="text/css" rel="stylesheet" href="css/popup.css" />
+		<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.18.custom.css" />
 		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
-		<script type="text/javascript" src="js/jquery.tools.min.js"></script>
+		<style>
+			input {
+				width: 25px;
+			}
+			body {
+				width: 250px;
+			}
+			#slider {
+				width: 150px;
+				margin: 10px;
+				float: left;
+			}
+			#amountContainer {
+				margin-left: 170px;
+			}
+		</style>
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/popup.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				initPopup();
+			});
+		</script>
 	</head>
 	<body>
-		<button id="zoomInBtn" class="btn" ><i class="icon-zoom-out"></i></button>
-		<input type="range" id="zoomlvl" name="zoomlvl" min="10" max="300" value="100" />
-		<button id="zoomOutBtn" class="btn" ><i class="icon-zoom-in"></i></button>
-		<button id="zoomResetBtn" class="btn" ><i class="icon-refresh"></i></button>
-		<script type="text/javascript" src="js/popup.js"></script>
+		<div id="slider"></div>
+		<div id="amountContainer">
+			<input type="text" id="amount" value="100">
+		</div>
+		<div class="btn-group">
+			<button id="zoomOutBtn" class="btn" >
+				<i class="icon-zoom-out"></i>
+			</button>
+			<button id="zoomInBtn" class="btn" >
+				<i class="icon-zoom-in"></i>
+			</button>
+			<button id="zoomResetBtn" class="btn" >
+				<i class="icon-refresh"></i>
+			</button>
+			<button id="optionBtn" class="btn" onclick="chrome.tabs.create({'url': chrome.extension.getURL('option.html')}, function(tab) {});">
+				<i class="icon-cog"></i>
+			</button>			
+		</div>
 		<div id="debug"></div>
 	</body>
 </html>

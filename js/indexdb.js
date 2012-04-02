@@ -42,7 +42,6 @@ ezZoom.indexedDB.open = function() {
             ezZoom.indexedDB.getAllDomainZoomLevelItems();
         }
     };
-
     request.onerror = ezZoom.indexedDB.onerror;
 }
 
@@ -50,14 +49,11 @@ ezZoom.indexedDB.addDomainZoomLevel = function(domain, zoomLevel) {
     var db = ezZoom.indexedDB.db;
     var trans = db.transaction(["domainZoomLevel"], IDBTransaction.READ_WRITE);
     var store = trans.objectStore("domainZoomLevel");
-
     var request = store.put(zoomLevel, domain);
-
     request.onsuccess = function(e) {
         console.log("add successful");
         ezZoom.indexedDB.getAllDomainZoomLevelItems();
     };
-
     request.onerror = function(e) {
         console.log("Error Adding: ", e);
     };
@@ -67,13 +63,10 @@ ezZoom.indexedDB.deleteDomainZoomLevel = function(id) {
     var db = ezZoom.indexedDB.db;
     var trans = db.transaction(["domainZoomLevel"], IDBTransaction.READ_WRITE);
     var store = trans.objectStore("domainZoomLevel");
-    var request = store.
-    delete (id);
-
+    var request = store.delete(id);
     request.onsuccess = function(e) {
         ezZoom.indexedDB.getAllDomainZoomLevelItems();
     };
-
     request.onerror = function(e) {
         console.log("Error Adding: ", e);
     };
@@ -96,13 +89,9 @@ ezZoom.indexedDB.getAllDomainZoomLevelItems = function() {
             return;
         }
         renderDomainZoomLevel(result);
-        result.
-        continue();
+        result.continue();
     };
-    
-    
-
-    cursorRequest.onerror = ezZoom.indexedDB.onerror;
+	cursorRequest.onerror = ezZoom.indexedDB.onerror;
 };
 
 ezZoom.indexedDB.getDomainZoomLevel = function(domain, callback) {
@@ -116,7 +105,6 @@ ezZoom.indexedDB.getDomainZoomLevel = function(domain, callback) {
 };
 
 function renderDomainZoomLevel(row) {
-	
 	$("#domainZoomLevelContainer tbody").append('<tr><td>'+row.key+'</td><td>'+row.value+'</td><td><i class="icon-remove"></i></td></tr>');
 	$("#domainZoomLevelContainer i:last").click(function(){
 		var domain = $(this).parent('td').prevAll("td").last().html();
@@ -128,13 +116,11 @@ function addDomainZoomLevel(domain, zoomLevel) {
     ezZoom.indexedDB.addDomainZoomLevel(domain, zoomLevel);
 };
 
-
-
-
-function init() {
+function initIndexDB() {
     ezZoom.indexedDB.open();
 };
 
-window.addEventListener("DOMContentLoaded", init, false);
+
+
 
 

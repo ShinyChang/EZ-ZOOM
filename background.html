@@ -8,15 +8,20 @@
         <title>Background Page</title>
         <meta name="description" content="" />
         <meta name="author" content="Shiny" />
-        <meta name="viewport" content="width=device-width; initial-scale=1.0" />
         <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link type="text/css" rel="stylesheet" href="css/style.css" />
-        <script type="text/javascript" src="js/jquery.tools.min.js"></script>
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
         <script type="text/javascript" src="js/background.js"></script>
         <script type="text/javascript" src="js/indexdb.js"></script>
+        <script type="text/javascript" src="js/contextmenu.js"></script>
+        <script type="text/javascript">
+        	$(function(){
+        		initIndexDB();
+        		initEzZoom();
+        		initContextMenu();
+			});
+        </script>
     </head>
     <body>
-        <ul id="domainZoomLevelContainer"></ul>
     </body>
 </html>

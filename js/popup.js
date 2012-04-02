@@ -1,74 +1,74 @@
-$(":range").rangeinput();
-var zoomObj = $("#zoomlvl").data("rangeinput");
-
-// set current tab's zoom level
-chrome.extension.getBackgroundPage().getCurrentTabDomain(
-		function(domain) {
-			chrome.extension.getBackgroundPage().ezZoom.indexedDB
-					.getDomainZoomLevel(domain, function(result) {
-						zoomObj.setValue(result);
-					});
-		})
-
-$("input").keydown(function(event) {
-	if (event.keyCode == 13) {	//enter
-		zoomObj.setValue(this.value);
-		focusInput();
+function onKeyDown(event) {
+	//48~57 96~105 110 190
+	if(event.keyCode == 13) {//enter
+		$("#slider").slider("value", this.value);
 	}
-});
+};
 
-$(":range").change(function(event, value) {
-	chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.sendRequest(tab.id, {
-			method : "setZoomLevel",
-			zoomLevel : zoomObj.getValue()
-		}, function(response) {
-			// do not thing
-		});
-	});
-	focusInput();
-});
+function onZoomIn(event, value) {
+	$("#slider").slider("value", parseInt($("#slider").slider("value")) + 10);
+};
 
-$("#zoomInBtn").click(function(event, value) {
-	zoomObj.stepDown(10);
-	chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.sendRequest(tab.id, {
-			method : "setZoomLevel",
-			zoomLevel : zoomObj.getValue()
-		}, function(response) {
-			// do not thing
-		});
-	});
-	focusInput();
-});
-
-$("#zoomResetBtn").click(function(event, value) {
-	zoomObj.setValue(100);
+function onZoomReset(event, value) {
+	$("#slider").slider("value", 100);
 	chrome.tabs.getSelected(null, function(tab) {
 		chrome.tabs.sendRequest(tab.id, {
 			method : "setZoomLevel",
 			zoomLevel : "100"
 		}, function(response) {
-			// do not thing
+			// do nothing
 		});
 	});
-	focusInput();
-});
+};
 
-$("#zoomOutBtn").click(function(event, value) {
-	zoomObj.stepUp(10);
+function focusInput() {
+	$("input[type='text']:first").select().focus();
+}
+
+function onZoomOut(event, value) {
+	$("#slider").slider("value", parseInt($("#slider").slider("value")) - 10);
+};
+
+// set current tab's zoom level
+function setCurrentTabsZoomLevel() {
+	chrome.extension.getBackgroundPage().getCurrentTabDomain(function(domain) {
+		chrome.extension.getBackgroundPage().ezZoom.indexedDB.getDomainZoomLevel(domain, function(result) {
+			if(result != undefined) {
+				$("#amount").val(result);
+				$("#slider").slider("value", result);
+			}
+		});
+	});
+};
+
+function updateZoom() {
 	chrome.tabs.getSelected(null, function(tab) {
 		chrome.tabs.sendRequest(tab.id, {
 			method : "setZoomLevel",
-			zoomLevel : zoomObj.getValue()
+			zoomLevel : $("#slider").slider("value")
 		}, function(response) {
-			// do not thing
+			// do nothing
 		});
 	});
+	$("#amount").val($("#slider").slider("value"));
 	focusInput();
-});
-var focusInput = function() {
-	$("input[type='text']:first").focus().select();
 }
 
-focusInput();
+function initPopup() {
+	$("#slider").slider({
+		range : "max",
+		min : 10,
+		max : 300,
+		value : 100,
+		slide : function(event, ui) {
+			$("#amount").val(ui.value);
+		},
+		change : updateZoom
+	});
+	setCurrentTabsZoomLevel();
+	$("input[type='text']:first").keydown(onKeyDown);
+	$("#zoomInBtn").click(onZoomIn);
+	$("#zoomResetBtn").click(onZoomReset);
+	$("#zoomOutBtn").click(onZoomOut);
+	focusInput();
+};
