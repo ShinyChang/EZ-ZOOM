@@ -9,7 +9,7 @@ function genericOnClick(info, tab) {
 function initContextMenu() {
 	var id = chrome.contextMenus.create({
 		"title" : "EZ ZOOM",
-		"contexts" : ["page", "image"],
+		"contexts" : ["page", "selection", "link", "editable", "image", "video", "audio"],
 		"onclick" : genericOnClick
 	});
 }
