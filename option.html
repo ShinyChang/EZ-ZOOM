@@ -16,6 +16,23 @@
 		<script type="text/javascript">
 			$(function() {
 				initIndexDB();
+				
+				var background_page = chrome.extension.getBackgroundPage();
+				$("input:checkbox").attr("checked", (localStorage.getItem("contextMenu") === "checked"));
+				
+				//form submit
+				$("form").submit(function() {
+
+					// store option info
+					localStorage.setItem("contextMenu", $("input:checkbox").attr("checked"));
+
+					// enable/disable context menu
+					if($("input:checkbox").attr("checked") === "checked") {
+						background_page.createContextMenu();
+					} else {
+						background_page.destoryContextMenu();
+					}
+				});
 			});
 
 		</script>
@@ -29,9 +46,9 @@
 						<h1>Option Page</h1>
 					</div>
 					<div class="alert alert-info">
-							<a class="close" data-dismiss="alert">×</a>
-							<strong>Note!</strong> This is not implemented.
-						</div>	
+						<a class="close" data-dismiss="alert">×</a>
+						<strong>Note!</strong> This is not implemented.
+					</div>
 					<div class="row">
 						<div class="span6">
 							<form class="form-horizontal">
@@ -43,7 +60,8 @@
 										<label class="control-label" for="minimumZoomInput">Minimum Zoom Size</label>
 										<div class="controls">
 											<div class="input-append">
-												<input class="input-mini" id="minimumZoomInput" value="10" type="text" disabled=""><span class="add-on">%</span>
+												<input class="input-mini" id="minimumZoomInput" value="10" type="text" disabled="">
+												<span class="add-on">%</span>
 											</div>
 										</div>
 									</div>
@@ -51,7 +69,8 @@
 										<label class="control-label" for="maximumZoomInput">Minimum Zoom Size</label>
 										<div class="controls">
 											<div class="input-append">
-												<input class="input-mini" id="maximumZoomInput" value="300" type="text" disabled=""><span class="add-on">%</span>
+												<input class="input-mini" id="maximumZoomInput" value="300" type="text" disabled="">
+												<span class="add-on">%</span>
 											</div>
 										</div>
 									</div>
@@ -59,7 +78,8 @@
 										<label class="control-label" for="zoomStepInput">Zoom step</label>
 										<div class="controls">
 											<div class="input-append">
-												<input class="input-mini" id="zoomStepInput" value="10" type="text" disabled=""><span class="add-on">%</span>
+												<input class="input-mini" id="zoomStepInput" value="10" type="text" disabled="">
+												<span class="add-on">%</span>
 											</div>
 										</div>
 									</div>
@@ -67,7 +87,7 @@
 										<label class="control-label" for="optionsCheckbox2">Context Menu</label>
 										<div class="controls">
 											<label class="checkbox">
-												<input type="checkbox" id="optionsCheckbox2" value="option1" checked="true" disabled="">
+												<input type="checkbox" id="optionsCheckbox2" value="option1" checked="true">
 												Enable </label>
 										</div>
 									</div>
