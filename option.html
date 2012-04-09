@@ -16,14 +16,20 @@
 		<script type="text/javascript">
 			$(function() {
 				initIndexDB();
-				
 				var background_page = chrome.extension.getBackgroundPage();
+
+				$("#minimumZoomInput").val(localStorage.getItem("minZoomLevel"));
+				$("#maximumZoomInput").val(localStorage.getItem("maxZoomLevel"));
+				$("#zoomStepInput").val(localStorage.getItem("zoomStep"));
 				$("input:checkbox").attr("checked", (localStorage.getItem("contextMenu") === "checked"));
-				
+
 				//form submit
 				$("form").submit(function() {
 
 					// store option info
+					localStorage.setItem("minZoomLevel", $("#minimumZoomInput").val());
+					localStorage.setItem("maxZoomLevel", $("#maximumZoomInput").val());
+					localStorage.setItem("zoomStep", $("#zoomStepInput").val());
 					localStorage.setItem("contextMenu", $("input:checkbox").attr("checked"));
 
 					// enable/disable context menu
@@ -32,6 +38,7 @@
 					} else {
 						background_page.destoryContextMenu();
 					}
+					background_page.updateParameter();
 				});
 			});
 
@@ -47,7 +54,7 @@
 					</div>
 					<div class="alert alert-info">
 						<a class="close" data-dismiss="alert">×</a>
-						<strong>Note!</strong> This is not implemented.
+						<strong>Information!</strong> Now you can change the value of system parameters.
 					</div>
 					<div class="row">
 						<div class="span6">
@@ -60,17 +67,15 @@
 										<label class="control-label" for="minimumZoomInput">Minimum Zoom Size</label>
 										<div class="controls">
 											<div class="input-append">
-												<input class="input-mini" id="minimumZoomInput" value="10" type="text" disabled="">
-												<span class="add-on">%</span>
+												<input class="input-mini" id="minimumZoomInput" value="10" type="text"><span class="add-on">%</span>
 											</div>
 										</div>
 									</div>
 									<div class="control-group">
-										<label class="control-label" for="maximumZoomInput">Minimum Zoom Size</label>
+										<label class="control-label" for="maximumZoomInput">Maximum Zoom Size</label>
 										<div class="controls">
 											<div class="input-append">
-												<input class="input-mini" id="maximumZoomInput" value="300" type="text" disabled="">
-												<span class="add-on">%</span>
+												<input class="input-mini" id="maximumZoomInput" value="300" type="text"><span class="add-on">%</span>
 											</div>
 										</div>
 									</div>
@@ -78,8 +83,7 @@
 										<label class="control-label" for="zoomStepInput">Zoom step</label>
 										<div class="controls">
 											<div class="input-append">
-												<input class="input-mini" id="zoomStepInput" value="10" type="text" disabled="">
-												<span class="add-on">%</span>
+												<input class="input-mini" id="zoomStepInput" value="10" type="text"><span class="add-on">%</span>
 											</div>
 										</div>
 									</div>

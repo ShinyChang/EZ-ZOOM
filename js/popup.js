@@ -1,3 +1,9 @@
+var ezZoomParameter = {
+	max : 300,
+	min : 10,
+	step : 10
+};
+
 function onKeyDown(event) {
 	//48~57 96~105 110 190
 	if(event.keyCode == 13) {//enter
@@ -6,7 +12,7 @@ function onKeyDown(event) {
 };
 
 function onZoomIn(event, value) {
-	$("#slider").slider("value", parseInt($("#slider").slider("value")) + 10);
+	$("#slider").slider("value", parseInt($("#slider").slider("value")) + parseInt(ezZoomParameter.step));
 };
 
 function onZoomReset(event, value) {
@@ -26,7 +32,7 @@ function focusInput() {
 }
 
 function onZoomOut(event, value) {
-	$("#slider").slider("value", parseInt($("#slider").slider("value")) - 10);
+	$("#slider").slider("value", parseInt($("#slider").slider("value")) - parseInt(ezZoomParameter.step));
 };
 
 // set current tab's zoom level
@@ -52,23 +58,41 @@ function updateZoom() {
 	});
 	$("#amount").val($("#slider").slider("value"));
 	focusInput();
-}
+};
+
+//updata zoom parameter
+function updateParameter() {
+	chrome.extension.sendRequest({
+		method : "getParameter"
+	}, function(response) {
+		ezZoomParameter.max = response.max;
+		ezZoomParameter.min = response.min;
+		ezZoomParameter.step = response.step;
+		
+		//update slider parameter
+		$('#slider').slider('option', 'max', parseInt(ezZoomParameter.max))
+		$('#slider').slider('option', 'min', parseInt(ezZoomParameter.min))
+		$('#slider').slider('value', $('#amount').val());
+	});
+};
 
 function initPopup() {
 	$("#slider").slider({
 		range : "max",
-		min : 10,
-		max : 300,
+		min : ezZoomParameter.min,
+		max : ezZoomParameter.max,
 		value : 100,
 		slide : function(event, ui) {
 			$("#amount").val(ui.value);
 		},
-		change : updateZoom
+		change : updateZoom,
+		create : updateParameter
 	});
-	setCurrentTabsZoomLevel();
+
 	$("input[type='text']:first").keydown(onKeyDown);
 	$("#zoomInBtn").click(onZoomIn);
 	$("#zoomResetBtn").click(onZoomReset);
 	$("#zoomOutBtn").click(onZoomOut);
+	setCurrentTabsZoomLevel();
 	focusInput();
 };

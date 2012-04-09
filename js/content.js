@@ -1,4 +1,4 @@
-window.addEventListener("keydown", function(event) {
+document.addEventListener("keydown", function(event) {
 
 	var element;
 	if(event.target) {
@@ -17,90 +17,109 @@ window.addEventListener("keydown", function(event) {
 	}
 
 	if(event.keyCode == 109 || event.keyCode == 189) {// -
-		setZoomLevelForContent(parseInt(getZoomLevelFromContent()) - 10);
-		sendZoomLevelToBackground(getZoomLevelFromContent());
+		ezZoom.setZoomLevelForContent(parseInt(ezZoom.getZoomLevelFromContent()) - parseInt(ezZoom.zoomStep));
+		ezZoom.sendZoomLevelToBackground(ezZoom.getZoomLevelFromContent());
 	} else if(event.keyCode == 106 || event.keyCode == 56) {// *
-		setZoomLevelForContent(100);
-		sendZoomLevelToBackground(getZoomLevelFromContent());
+		ezZoom.setZoomLevelForContent(100);
+		ezZoom.sendZoomLevelToBackground(ezZoom.getZoomLevelFromContent());
 	} else if(event.keyCode == 107 || event.keyCode == 187) {// +
-		setZoomLevelForContent(parseInt(getZoomLevelFromContent()) + 10);
-		sendZoomLevelToBackground(getZoomLevelFromContent());
+		ezZoom.setZoomLevelForContent(parseInt(ezZoom.getZoomLevelFromContent()) + parseInt(ezZoom.zoomStep));
+		ezZoom.sendZoomLevelToBackground(ezZoom.getZoomLevelFromContent());
 	}
 });
-updateZoomLevelFromBackground();
-
-var ezZoomTargetElement;
-window.addEventListener("mousedown", function(event) {
-	ezZoomTargetElement = event.srcElement;
-	console.log(ezZoomTargetElement);
+var ezZoom = {
+	max : 300,
+	min : 10,
+	zoomStep : 10,
+	ezZoomTargetElement : null,
+	sendZoomLevelToBackground : function(level) {
+		chrome.extension.sendRequest({
+			method : "setZoomLevel",
+			key : level
+		}, function(response) {
+			// do nothing
+		});
+	},
+	getZoomLevelFromBackground : function(callback) {
+		chrome.extension.sendRequest({
+			method : "getZoomLevel"
+		}, function(response) {
+			callback(response.status);
+		});
+	},
+	updateZoomLevelFromBackground : function() {
+		this.getZoomLevelFromBackground(function(result) {
+			if(result === undefined) {
+				ezZoom.setZoomLevelForContent("100");
+			} else {
+				ezZoom.setZoomLevelForContent(result);
+			}
+		});
+	},
+	getZoomLevelFromContent : function() {
+		var z = document.getElementsByTagName('html')[0].style.zoom;
+		z = z.substring(0, z.length - 1);
+		if(z === "") {
+			z = "100";
+		}
+		return z;
+	},
+	setZoomLevelForContent : function(level) {
+		if(parseInt(level) > this.max) {
+			level = this.max;
+		} else if(parseInt(level) < this.min) {
+			level = this.min;
+		}
+		document.getElementsByTagName('html')[0].style.zoom = level + "%";
+	},
+	updateParameter : function() {
+		chrome.extension.sendRequest({
+			method : "getParameter"
+		}, function(response) {
+			ezZoom.max = response.max;
+			ezZoom.min = response.min;
+			ezZoom.zoomStep = response.step;
+			ezZoom.updateZoomLevelFromBackground();
+		});
+	},
+	init : function() {
+		this.updateParameter();
+	}
+};
+document.addEventListener("mousedown", function(event) {
+	ezZoom.ezZoomTargetElement = event.srcElement;
 });
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	//request from popup (when zoom changed)
-	if(request.method == "setZoomLevel") {
-		console.log("I GOT" + request.zoomLevel);
-		setZoomLevelForContent(request.zoomLevel);
-		sendZoomLevelToBackground(getZoomLevelFromContent());
+	if(request.method === "setZoomLevel") {
+		ezZoom.setZoomLevelForContent(request.zoomLevel);
+		ezZoom.sendZoomLevelToBackground(ezZoom.getZoomLevelFromContent());
 		sendResponse({
 			status : null
 		});
 		//request from bg (zoom target)
-	} else if(request.method == "zoomTarget") {
+	} else if(request.method === "zoomTarget") {
+
 		//35 is magic number
 		var windowWidth = parseInt(window.outerWidth) - 35;
-		
+
 		//***this may have some problems***
-		var targetWidth = parseInt(ezZoomTargetElement.offsetWidth);
+		var targetWidth = parseInt(ezZoom.ezZoomTargetElement.offsetWidth);
 		var level = windowWidth / targetWidth;
 		document.getElementsByTagName('html')[0].style.zoom = (level * 100) + "%";
-		window.scrollTo(ezZoomTargetElement.offsetLeft * level, ezZoomTargetElement.offsetTop * level);
+		window.scrollTo(ezZoom.ezZoomTargetElement.offsetLeft * level, ezZoom.ezZoomTargetElement.offsetTop * level);
 		//***this may have some problems***
+
 		sendResponse({
 			status : "ok"
 		});
+		//request from option page (update parameter)
+	} else if(request.method === "updateParameter") {
+		ezZoom.max = request.max;
+		ezZoom.min = request.min;
+		ezZoom.zoomStep = request.step;
 	}
 });
-function sendZoomLevelToBackground(level) {
-	chrome.extension.sendRequest({
-		method : "setZoomLevel",
-		key : level
-	}, function(response) {
-		console.log("setZoomLevel:" + response.status);
-	});
-};
 
-function getZoomLevelFromBackground(callback) {
-	chrome.extension.sendRequest({
-		method : "getZoomLevel"
-	}, function(response) {
-		console.log("getZoomLevel:" + response.status);
-		callback(response.status);
-	});
-};
-
-function updateZoomLevelFromBackground() {
-	getZoomLevelFromBackground(function(result) {
-		if(result === undefined) {
-			setZoomLevelForContent("100");
-		} else {
-			setZoomLevelForContent(result);
-		}
-	});
-};
-
-function getZoomLevelFromContent() {
-	console.log("get zoom form content");
-	var z = document.getElementsByTagName('html')[0].style.zoom;
-	z = z.substring(0, z.length - 1);
-	return z;
-};
-
-function setZoomLevelForContent(level) {
-	if(level > 300) {
-		level = 300;
-	} else if(level < 10) {
-		level = 10;
-	}
-	console.log("set zoom form content");
-	document.getElementsByTagName('html')[0].style.zoom = level + "%";
-};
+ezZoom.init();
