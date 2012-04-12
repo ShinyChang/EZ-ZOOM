@@ -1,6 +1,6 @@
 {
   "name": "EZ Zoom",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "Press + - * can zoom just like Opera browser.",
   "browser_action": {
     "popup": "popup.html",  
@@ -9,7 +9,7 @@
   "content_scripts": [ {
       "all_frames": true,
       "js": [ "js/content.js" ],
-      "matches": [ "http://*/*", "https://*/*" ],
+      "matches": [ "<all_urls>" ],
       "run_at": "document_start"
   } ],
   "background_page": "background.html",

@@ -99,9 +99,9 @@ function destoryContextMenu() {
 
 //control the version of ezZoom
 function versionControl() {
-	if(localStorage.getItem("version") !== "1.6.3") {
+	if(localStorage.getItem("version") !== "1.6.4") {
 		//init context menu
-		localStorage.setItem("version", "1.6.3");
+		localStorage.setItem("version", "1.6.4");
 
 		//default parameter
 		if(!localStorage.getItem("contextMenu")) {
@@ -115,6 +115,9 @@ function versionControl() {
 		}
 		if(!localStorage.getItem("zoomStep")) {
 			localStorage.setItem("zoomStep", "10");
+		}
+		if(!localStorage.getItem("updateInfo")) {
+			localStorage.setItem("updateInfo", "Ez zoom can work fine at file:/// now.");
 		}
 	}
 }

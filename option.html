@@ -17,7 +17,16 @@
 			$(function() {
 				initIndexDB();
 				var background_page = chrome.extension.getBackgroundPage();
-
+				
+				//update info
+				if(localStorage.getItem("updateInfo")) {
+					$("#infoDiv").append(localStorage.getItem("updateInfo")).alert();
+					$("#infoDiv").bind("close", function(){
+						localStorage.removeItem("updateInfo");
+					});
+				} else {
+					$("#infoDiv").hide();
+				}
 				$("#minimumZoomInput").val(localStorage.getItem("minZoomLevel"));
 				$("#maximumZoomInput").val(localStorage.getItem("maxZoomLevel"));
 				$("#zoomStepInput").val(localStorage.getItem("zoomStep"));
@@ -52,9 +61,9 @@
 					<div class="page-header">
 						<h1>Option Page</h1>
 					</div>
-					<div class="alert alert-info">
+					<div id="infoDiv" class="alert alert-info">
 						<a class="close" data-dismiss="alert">×</a>
-						<strong>Information!</strong> Now you can change the value of system parameters.
+						<strong>Update Information!</strong>
 					</div>
 					<div class="row">
 						<div class="span6">
