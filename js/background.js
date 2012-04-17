@@ -89,7 +89,9 @@ function setDefaultZoomOnBadge() {
 
 //create context menu
 function createContextMenu() {
-	ezZoomContextMenu.create();
+	if(localStorage.getItem("contextMenu") === "checked") {
+		ezZoomContextMenu.create();
+	}
 };
 
 //remove context menu
@@ -99,9 +101,10 @@ function destoryContextMenu() {
 
 //control the version of ezZoom
 function versionControl() {
-	if(localStorage.getItem("version") !== "1.6.4") {
+	if(localStorage.getItem("version") !== "1.6.5") {
 		//init context menu
-		localStorage.setItem("version", "1.6.4");
+		localStorage.setItem("version", "1.6.5");
+		localStorage.removeItem("updateInfo");
 
 		//default parameter
 		if(!localStorage.getItem("contextMenu")) {
@@ -117,7 +120,7 @@ function versionControl() {
 			localStorage.setItem("zoomStep", "10");
 		}
 		if(!localStorage.getItem("updateInfo")) {
-			localStorage.setItem("updateInfo", "Ez zoom can work fine at file:/// now.");
+			localStorage.setItem("updateInfo", "Context menu will not be created if it is disabled.");
 		}
 	}
 }
