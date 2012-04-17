@@ -1,6 +1,6 @@
 {
   "name": "EZ Zoom",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "Press + - * can zoom just like Opera browser.",
   "browser_action": {
     "popup": "popup.html",  
