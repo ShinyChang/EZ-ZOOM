@@ -72,7 +72,6 @@ function setZoomOfCurrentTab(tabId, selectInfo) {
 			if(result === undefined) {
 				result = localStorage.getItem("defaultZoomLevel");
 			}
-			console.log(result);
 
 			//update extension badge
 			chrome.browserAction.setBadgeText({
