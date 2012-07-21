@@ -47,6 +47,7 @@ function requestFromTabs(request, sender, sendResponse) {
 		case "getParameter":
 			//response
 			sendResponse({
+			    defaultZoom : localStorage.getItem("defaultZoomLevel"), 
 				max : localStorage.getItem("maxZoomLevel"),
 				min : localStorage.getItem("minZoomLevel"),
 				step : localStorage.getItem("zoomStep")
@@ -69,8 +70,9 @@ function setZoomOfCurrentTab(tabId, selectInfo) {
 
 			//set default zoom level when current tab never zoomed or can not zoom
 			if(result === undefined) {
-				result = "100";
+				result = localStorage.getItem("defaultZoomLevel");
 			}
+			console.log(result);
 
 			//update extension badge
 			chrome.browserAction.setBadgeText({
@@ -83,7 +85,7 @@ function setZoomOfCurrentTab(tabId, selectInfo) {
 //default zoom level badge
 function setDefaultZoomOnBadge() {
 	chrome.browserAction.setBadgeText({
-		text : "100"
+		text : localStorage.getItem("defaultZoomLevel")
 	});
 };
 
@@ -101,12 +103,15 @@ function destoryContextMenu() {
 
 //control the version of ezZoom
 function versionControl() {
-	if(localStorage.getItem("version") !== "1.6.5") {
+	if(localStorage.getItem("version") !== "1.6.6") {
 		//init context menu
-		localStorage.setItem("version", "1.6.5");
+		localStorage.setItem("version", "1.6.6");
 		localStorage.removeItem("updateInfo");
 
 		//default parameter
+        if(!localStorage.getItem("defaultZoomLevel")) {
+            localStorage.setItem("defaultZoomLevel", "100");
+        }		
 		if(!localStorage.getItem("contextMenu")) {
 			localStorage.setItem("contextMenu", "checked");
 		}
@@ -120,7 +125,7 @@ function versionControl() {
 			localStorage.setItem("zoomStep", "10");
 		}
 		if(!localStorage.getItem("updateInfo")) {
-			localStorage.setItem("updateInfo", "Context menu will not be created if it is disabled.");
+			localStorage.setItem("updateInfo", "You can set default zoom size right now. Enjoy it!");
 		}
 	}
 }
@@ -133,6 +138,7 @@ function updateParameter() {
 		tabs.forEach(function(tab) {
 			chrome.tabs.sendRequest(tab.id, {
 				method : "updateParameter",
+				defaultZoom : localStorage.getItem("defaultZoomLevel"), 
 				max : localStorage.getItem("maxZoomLevel"),
 				min : localStorage.getItem("minZoomLevel"),
 				step : localStorage.getItem("zoomStep")

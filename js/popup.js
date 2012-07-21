@@ -1,9 +1,12 @@
 var ezZoomParameter = {
+    defaultZoom : 100,
 	max : 300,
 	min : 10,
 	step : 10
 };
 
+
+//key down event function
 function onKeyDown(event) {
 	//48~57 96~105 110 190
 	if(event.keyCode == 13) {//enter
@@ -11,16 +14,23 @@ function onKeyDown(event) {
 	}
 };
 
+//zoom in event function
 function onZoomIn(event, value) {
 	$("#slider").slider("value", parseInt($("#slider").slider("value")) + parseInt(ezZoomParameter.step));
 };
 
+//zoom out event function
+function onZoomOut(event, value) {
+	$("#slider").slider("value", parseInt($("#slider").slider("value")) - parseInt(ezZoomParameter.step));
+};
+
+//zoom reset event function
 function onZoomReset(event, value) {
-	$("#slider").slider("value", 100);
+	$("#slider").slider("value", ezZoomParameter.defaultZoom);
 	chrome.tabs.getSelected(null, function(tab) {
 		chrome.tabs.sendRequest(tab.id, {
 			method : "setZoomLevel",
-			zoomLevel : "100"
+			zoomLevel : ezZoomParameter.defaultZoom
 		}, function(response) {
 			// do nothing
 		});
@@ -30,10 +40,6 @@ function onZoomReset(event, value) {
 function focusInput() {
 	$("input[type='text']:first").select().focus();
 }
-
-function onZoomOut(event, value) {
-	$("#slider").slider("value", parseInt($("#slider").slider("value")) - parseInt(ezZoomParameter.step));
-};
 
 // set current tab's zoom level
 function setCurrentTabsZoomLevel() {
@@ -60,11 +66,12 @@ function updateZoom() {
 	focusInput();
 };
 
-//updata zoom parameter
+//update zoom parameter
 function updateParameter() {
 	chrome.extension.sendRequest({
 		method : "getParameter"
 	}, function(response) {
+	    ezZoomParameter.defaultZoom = response.defaultZoom;
 		ezZoomParameter.max = response.max;
 		ezZoomParameter.min = response.min;
 		ezZoomParameter.step = response.step;
@@ -72,7 +79,7 @@ function updateParameter() {
 		//update slider parameter
 		$('#slider').slider('option', 'max', parseInt(ezZoomParameter.max))
 		$('#slider').slider('option', 'min', parseInt(ezZoomParameter.min))
-		$('#slider').slider('value', $('#amount').val());
+		$('#slider').slider('value', ezZoomParameter.defaultZoom);
 	});
 };
 
@@ -81,7 +88,7 @@ function initPopup() {
 		range : "max",
 		min : ezZoomParameter.min,
 		max : ezZoomParameter.max,
-		value : 100,
+		value : ezZoomParameter.defaultZoom,
 		slide : function(event, ui) {
 			$("#amount").val(ui.value);
 		},

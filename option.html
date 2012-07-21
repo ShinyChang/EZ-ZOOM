@@ -12,6 +12,7 @@
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
 		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/indexdb.js"></script>
 		<script type="text/javascript">
 			$(function() {
@@ -27,6 +28,9 @@
 				} else {
 					$("#infoDiv").hide();
 				}
+				
+				//set attribute
+				$("#defaultZoom").val(localStorage.getItem("defaultZoomLevel"));
 				$("#minimumZoomInput").val(localStorage.getItem("minZoomLevel"));
 				$("#maximumZoomInput").val(localStorage.getItem("maxZoomLevel"));
 				$("#zoomStepInput").val(localStorage.getItem("zoomStep"));
@@ -36,6 +40,7 @@
 				$("form").submit(function() {
 
 					// store option info
+					localStorage.setItem("defaultZoomLevel", $("#defaultZoom").val());
 					localStorage.setItem("minZoomLevel", $("#minimumZoomInput").val());
 					localStorage.setItem("maxZoomLevel", $("#maximumZoomInput").val());
 					localStorage.setItem("zoomStep", $("#zoomStepInput").val());
@@ -52,7 +57,7 @@
 			});
 
 		</script>
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		
 	</head>
 	<body>
 		<div class="container-fluid">
@@ -72,6 +77,14 @@
 									<legend>
 										System Parameters
 									</legend>
+                                    <div class="control-group">
+                                        <label class="control-label" for="defaultZoom">Default Zoom Size</label>
+                                        <div class="controls">
+                                            <div class="input-append">
+                                                <input class="input-mini" id="defaultZoom" value="100" type="text"><span class="add-on">%</span>
+                                            </div>
+                                        </div>
+                                    </div>									
 									<div class="control-group">
 										<label class="control-label" for="minimumZoomInput">Minimum Zoom Size</label>
 										<div class="controls">

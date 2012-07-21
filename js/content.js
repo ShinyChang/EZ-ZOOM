@@ -28,6 +28,7 @@ document.addEventListener("keydown", function(event) {
 	}
 });
 var ezZoom = {
+    defaultZoom : 100,
 	max : 300,
 	min : 10,
 	zoomStep : 10,
@@ -50,7 +51,8 @@ var ezZoom = {
 	updateZoomLevelFromBackground : function() {
 		this.getZoomLevelFromBackground(function(result) {
 			if(result === undefined) {
-				ezZoom.setZoomLevelForContent("100");
+			    console.log(ezZoom.defaultZoom);
+				ezZoom.setZoomLevelForContent(ezZoom.defaultZoom);
 			} else {
 				ezZoom.setZoomLevelForContent(result);
 			}
@@ -60,7 +62,7 @@ var ezZoom = {
 		var z = document.getElementsByTagName('html')[0].style.zoom;
 		z = z.substring(0, z.length - 1);
 		if(z === "") {
-			z = "100";
+			z = ezZoom.defaultZoom;
 		}
 		return z;
 	},
@@ -76,6 +78,7 @@ var ezZoom = {
 		chrome.extension.sendRequest({
 			method : "getParameter"
 		}, function(response) {
+		    ezZoom.defaultZoom = response.defaultZoom;
 			ezZoom.max = response.max;
 			ezZoom.min = response.min;
 			ezZoom.zoomStep = response.step;
@@ -116,6 +119,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 		});
 		//request from option page (update parameter)
 	} else if(request.method === "updateParameter") {
+	    ezZoom.defaultZoom = request.defaultZoom;
 		ezZoom.max = request.max;
 		ezZoom.min = request.min;
 		ezZoom.zoomStep = request.step;
