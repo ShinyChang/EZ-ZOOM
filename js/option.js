@@ -3,15 +3,17 @@ $(function() {
 	var background_page = chrome.extension.getBackgroundPage();
 	
 	//update info
-	if(localStorage.getItem("updateInfo")) {
-		$("#infoDiv").append(localStorage.getItem("updateInfo")).alert();
-		$("#infoDiv").bind("close", function(){
-			localStorage.removeItem("updateInfo");
-		});
-	} else {
-		$("#infoDiv").hide();
-	}
-	
+	chrome.storage.sync.get("updateInfo", function(o){
+		if(o.updateInfo) {
+			$("#infoDiv").append(o.updateInfo).alert();
+			$("#infoDiv").bind("close", function(){
+				chrome.storage.sync.remove("updateInfo");
+			});
+		} else {
+			$("#infoDiv").hide();
+		}		
+	});
+
 	//set attribute by chrome storage api
 	chrome.storage.sync.get(["defaultZoomLevel", "minZoomLevel", "maxZoomLevel", "zoomStep", "contextMenu"], function(obj){
 		$("#defaultZoom").val(obj.defaultZoomLevel);
@@ -31,7 +33,7 @@ $(function() {
 			"minZoomLevel": $("#minimumZoomInput").val(),
 			"maxZoomLevel": $("#maximumZoomInput").val(),
 			"zoomStep": $("#zoomStepInput").val(),
-			"contextMenu":  $("input:checkbox").attr("checked")
+			"contextMenu":  $("input:checkbox").attr("checked") === "checked" ? "checked" : "undefined"
 		});
 
 		// enable/disable context menu

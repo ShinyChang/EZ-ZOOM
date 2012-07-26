@@ -1,6 +1,5 @@
 // get current tab's domain
 function getCurrentTabDomain(callback) {
-	//console.log("get current tab\'s domain");
 	chrome.tabs.getSelected(null, function(tab) {
 		callback(tab.url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1]);
 	});
@@ -16,7 +15,6 @@ function requestFromTabs(obj, sneder, sendResponse) {
 			chrome.browserAction.setBadgeText({
 				text : obj.key
 			});
-			//console.log("set zoom:" + request.key);
 
 			//get current tab's domain and update database
 			chrome.tabs.getSelected(null, function(tab) {
@@ -44,7 +42,7 @@ function requestFromTabs(obj, sneder, sendResponse) {
 			chrome.storage.sync.get(["defaultZoomLevel", "minZoomLevel", "maxZoomLevel", "zoomStep"], function(o){
 				//response
 				sendResponse({
-					defaultZoom : o.defaultZoomLevel) 
+					defaultZoom : o.defaultZoomLevel, 
 					max : o.maxZoomLevel,
 					min : o.minZoomLevel,
 					step : o.zoomStep
@@ -83,16 +81,20 @@ function setZoomOfCurrentTab(tabId, selectInfo) {
 
 //default zoom level badge
 function setDefaultZoomOnBadge() {
-	chrome.browserAction.setBadgeText({
-		text : localStorage.getItem("defaultZoomLevel")
+	chrome.storage.sync.get("defaultZoomLevel", function(o) {
+		chrome.browserAction.setBadgeText({
+			text : o.defaultZoomLevel
+		});
 	});
 };
 
 //create context menu
 function createContextMenu() {
-	if(localStorage.getItem("contextMenu") === "checked") {
-		ezZoomContextMenu.create();
-	}
+	chrome.storage.sync.get("contextMenu", function(o) {
+		if(o.contextMenu === "checked") {
+			ezZoomContextMenu.create();
+		}
+	});
 };
 
 //remove context menu
@@ -137,13 +139,15 @@ function updateParameter() {
 
 	//this may not work
 	chrome.tabs.getAllInWindow(null, function(tabs) {
-		tabs.forEach(function(tab) {
-			chrome.tabs.sendMessage(tab.id, {
-				method : "updateParameter",
-				defaultZoom : localStorage.getItem("defaultZoomLevel"), 
-				max : localStorage.getItem("maxZoomLevel"),
-				min : localStorage.getItem("minZoomLevel"),
-				step : localStorage.getItem("zoomStep")
+		chrome.storage.sync.get(["defaultZoomLevel", "minZoomLevel", "maxZoomLevel", "zoomStep"], function(o){
+			tabs.forEach(function(tab) {
+				chrome.tabs.sendMessage(tab.id, {
+					method : "updateParameter",
+					defaultZoom : o.defaultZoomLevel, 
+					max : o.maxZoomLevel,
+					min : o.minZoomLevel,
+					step : o.zoomStep
+				});
 			});
 		});
 	});
