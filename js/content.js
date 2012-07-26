@@ -49,7 +49,6 @@ var ezZoom = {
 	updateZoomLevelFromBackground : function() {
 		this.getZoomLevelFromBackground(function(result) {
 			if(result === undefined) {
-			    console.log(ezZoom.defaultZoom);
 				ezZoom.setZoomLevelForContent(ezZoom.defaultZoom);
 			} else {
 				ezZoom.setZoomLevelForContent(result);
