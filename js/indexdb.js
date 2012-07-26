@@ -51,7 +51,6 @@ ezZoom.indexedDB.addDomainZoomLevel = function(domain, zoomLevel) {
     var store = trans.objectStore("domainZoomLevel");
     var request = store.put(zoomLevel, domain);
     request.onsuccess = function(e) {
-        console.log("add successful");
         ezZoom.indexedDB.getAllDomainZoomLevelItems();
     };
     request.onerror = function(e) {
@@ -112,15 +111,6 @@ function renderDomainZoomLevel(row) {
 	});
 };
 
-function addDomainZoomLevel(domain, zoomLevel) {
-    ezZoom.indexedDB.addDomainZoomLevel(domain, zoomLevel);
-};
-
 function initIndexDB() {
     ezZoom.indexedDB.open();
 };
-
-
-
-
-

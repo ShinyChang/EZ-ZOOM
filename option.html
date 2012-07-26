@@ -14,50 +14,7 @@
 		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/indexdb.js"></script>
-		<script type="text/javascript">
-			$(function() {
-				initIndexDB();
-				var background_page = chrome.extension.getBackgroundPage();
-				
-				//update info
-				if(localStorage.getItem("updateInfo")) {
-					$("#infoDiv").append(localStorage.getItem("updateInfo")).alert();
-					$("#infoDiv").bind("close", function(){
-						localStorage.removeItem("updateInfo");
-					});
-				} else {
-					$("#infoDiv").hide();
-				}
-				
-				//set attribute
-				$("#defaultZoom").val(localStorage.getItem("defaultZoomLevel"));
-				$("#minimumZoomInput").val(localStorage.getItem("minZoomLevel"));
-				$("#maximumZoomInput").val(localStorage.getItem("maxZoomLevel"));
-				$("#zoomStepInput").val(localStorage.getItem("zoomStep"));
-				$("input:checkbox").attr("checked", (localStorage.getItem("contextMenu") === "checked"));
-
-				//form submit
-				$("form").submit(function() {
-
-					// store option info
-					localStorage.setItem("defaultZoomLevel", $("#defaultZoom").val());
-					localStorage.setItem("minZoomLevel", $("#minimumZoomInput").val());
-					localStorage.setItem("maxZoomLevel", $("#maximumZoomInput").val());
-					localStorage.setItem("zoomStep", $("#zoomStepInput").val());
-					localStorage.setItem("contextMenu", $("input:checkbox").attr("checked"));
-
-					// enable/disable context menu
-					if($("input:checkbox").attr("checked") === "checked") {
-						background_page.createContextMenu();
-					} else {
-						background_page.destoryContextMenu();
-					}
-					background_page.updateParameter();
-				});
-			});
-
-		</script>
-		
+		<script type="text/javascript" src="js/option.js"></script>
 	</head>
 	<body>
 		<div class="container-fluid">

@@ -7,14 +7,14 @@ function getCurrentTabDomain(callback) {
 };
 
 // handle request which is from context or popup page
-function requestFromTabs(request, sender, sendResponse) {
+function requestFromTabs(obj, sneder, sendResponse) {
 
-	switch(request.method) {
+	switch(obj.method) {
 		//update database trigger by context or popup page
 		case "setZoomLevel":
 			//update extension badge
 			chrome.browserAction.setBadgeText({
-				text : request.key
+				text : obj.key
 			});
 			//console.log("set zoom:" + request.key);
 
@@ -22,11 +22,7 @@ function requestFromTabs(request, sender, sendResponse) {
 			chrome.tabs.getSelected(null, function(tab) {
 
 				//indexDB function
-				addDomainZoomLevel(tab.url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1], request.key);
-			});
-			//response
-			sendResponse({
-				status : "ok"
+				ezZoom.indexedDB.addDomainZoomLevel(tab.url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1], obj.key);
 			});
 			break;
 		//response domain zoom level when tab switched, new tab created and popup page opened.
@@ -45,37 +41,41 @@ function requestFromTabs(request, sender, sendResponse) {
 			});
 			break;
 		case "getParameter":
-			//response
-			sendResponse({
-			    defaultZoom : localStorage.getItem("defaultZoomLevel"), 
-				max : localStorage.getItem("maxZoomLevel"),
-				min : localStorage.getItem("minZoomLevel"),
-				step : localStorage.getItem("zoomStep")
+			chrome.storage.sync.get(["defaultZoomLevel", "minZoomLevel", "maxZoomLevel", "zoomStep"], function(o){
+				//response
+				sendResponse({
+					defaultZoom : o.defaultZoomLevel) 
+					max : o.maxZoomLevel,
+					min : o.minZoomLevel,
+					step : o.zoomStep
+				});
+				return true;
 			});
 			break;
 	}
-
+	return true;
 };
 
 //set current tab's zoom level
 function setZoomOfCurrentTab(tabId, selectInfo) {
-	// console.log("tab changed");
 
 	// get current tab
 	chrome.tabs.getSelected(null, function(tab) {
 
-		//query domain zoom level
-		ezZoom.indexedDB.getDomainZoomLevel(tab.url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1], function(result) {
-			//console.log("tab zoom level:" + result);
 
-			//set default zoom level when current tab never zoomed or can not zoom
-			if(result === undefined) {
-				result = localStorage.getItem("defaultZoomLevel");
-			}
+		chrome.storage.sync.get("defaultZoomLevel", function(o) {
+			//query domain zoom level
+			ezZoom.indexedDB.getDomainZoomLevel(tab.url.match(/^[\w-]+:\/*\[?([\w\.:-]+)\]?(?::\d+)?/)[1], function(result) {
 
-			//update extension badge
-			chrome.browserAction.setBadgeText({
-				text : result
+				//set default zoom level when current tab never zoomed or can not zoom
+				if(result === undefined) {
+					result = o.defaultZoomLevel;
+				}
+
+				//update extension badge
+				chrome.browserAction.setBadgeText({
+					text : result
+				});
 			});
 		});
 	});
@@ -102,31 +102,34 @@ function destoryContextMenu() {
 
 //control the version of ezZoom
 function versionControl() {
-	if(localStorage.getItem("version") !== "1.6.6") {
-		//init context menu
-		localStorage.setItem("version", "1.6.6");
-		localStorage.removeItem("updateInfo");
+	chrome.storage.sync.get("EZZoomVersion", function(o) {
+		if(o.EZZoomVersion !== "1.7.0") {
+			chrome.storage.sync.set({"EZZoomVersion": "1.7.0"});
+			chrome.storage.sync.remove("updateInfo");
 
-		//default parameter
-        if(!localStorage.getItem("defaultZoomLevel")) {
-            localStorage.setItem("defaultZoomLevel", "100");
-        }		
-		if(!localStorage.getItem("contextMenu")) {
-			localStorage.setItem("contextMenu", "checked");
+			//default parameter by chrome storage api
+			chrome.storage.sync.get(["defaultZoomLevel", "minZoomLevel", "maxZoomLevel", "zoomStep", "contextMenu", "updateInfo"], function(obj){
+				if(!obj.defaultZoomLevel) {
+					chrome.storage.sync.set({"defaultZoomLevel": "100"});
+				}
+				if(!obj.minZoomLevel) {
+					chrome.storage.sync.set({"minZoomLevel": "10"});
+				}
+				if(!obj.maxZoomLevel) {
+					chrome.storage.sync.set({"maxZoomLevel": "300"});
+				}			
+				if(!obj.zoomStep) {
+					chrome.storage.sync.set({"zoomStep": "10"});
+				}	
+				if(!obj.contextMenu) {
+					chrome.storage.sync.set({"contextMenu": "checked"});
+				}
+				if(!obj.updateInfo) {
+					chrome.storage.sync.set({"updateInfo": "Sync system parameter by google storage api!!"});
+				}			
+			});			
 		}
-		if(!localStorage.getItem("maxZoomLevel")) {
-			localStorage.setItem("maxZoomLevel", "300");
-		}
-		if(!localStorage.getItem("minZoomLevel")) {
-			localStorage.setItem("minZoomLevel", "10");
-		}
-		if(!localStorage.getItem("zoomStep")) {
-			localStorage.setItem("zoomStep", "10");
-		}
-		if(!localStorage.getItem("updateInfo")) {
-			localStorage.setItem("updateInfo", "You can set default zoom size right now. Enjoy it!");
-		}
-	}
+	});
 }
 
 //update content js parameter
@@ -135,14 +138,12 @@ function updateParameter() {
 	//this may not work
 	chrome.tabs.getAllInWindow(null, function(tabs) {
 		tabs.forEach(function(tab) {
-			chrome.tabs.sendRequest(tab.id, {
+			chrome.tabs.sendMessage(tab.id, {
 				method : "updateParameter",
 				defaultZoom : localStorage.getItem("defaultZoomLevel"), 
 				max : localStorage.getItem("maxZoomLevel"),
 				min : localStorage.getItem("minZoomLevel"),
 				step : localStorage.getItem("zoomStep")
-			}, function(response) {
-				//do nothing
 			});
 		});
 	});
@@ -151,9 +152,16 @@ function updateParameter() {
 //init
 function initEzZoom() {
 	versionControl();
-	chrome.extension.onRequest.addListener(requestFromTabs);
+	chrome.extension.onMessage.addListener(requestFromTabs);
 	chrome.tabs.onActiveChanged.addListener(setZoomOfCurrentTab);
 	chrome.tabs.onUpdated.addListener(setZoomOfCurrentTab);
 	createContextMenu();
 	setDefaultZoomOnBadge();
 };
+
+//Main function
+$(function() {
+	initIndexDB();
+	initEzZoom();
+});
+

@@ -6,7 +6,7 @@ var ezZoomContextMenu = {
 			"title" : this.title,
 			"contexts" : ["page", "selection", "link", "editable", "image", "video", "audio"],
 			"onclick" : function(info, tab) {
-				chrome.tabs.sendRequest(tab.id, {
+				chrome.tabs.sendMessage(tab.id, {
 					method : "zoomTarget"
 				}, function(response) {
 					// do nothing

@@ -1,10 +1,14 @@
 var ezZoomParameter = {
-    defaultZoom : 100,
+	defaultZoom : 100,
 	max : 300,
 	min : 10,
 	step : 10
 };
 
+//Main function
+$(function() {
+	initPopup();
+});
 
 //key down event function
 function onKeyDown(event) {
@@ -28,7 +32,7 @@ function onZoomOut(event, value) {
 function onZoomReset(event, value) {
 	$("#slider").slider("value", ezZoomParameter.defaultZoom);
 	chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.sendRequest(tab.id, {
+		chrome.tabs.sendMessage(tab.id, {
 			method : "setZoomLevel",
 			zoomLevel : ezZoomParameter.defaultZoom
 		}, function(response) {
@@ -55,7 +59,7 @@ function setCurrentTabsZoomLevel() {
 
 function updateZoom() {
 	chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.sendRequest(tab.id, {
+		chrome.tabs.sendMessage(tab.id, {
 			method : "setZoomLevel",
 			zoomLevel : $("#slider").slider("value")
 		}, function(response) {
@@ -68,10 +72,10 @@ function updateZoom() {
 
 //update zoom parameter
 function updateParameter() {
-	chrome.extension.sendRequest({
+	chrome.extension.sendMessage({
 		method : "getParameter"
 	}, function(response) {
-	    ezZoomParameter.defaultZoom = response.defaultZoom;
+		ezZoomParameter.defaultZoom = response.defaultZoom;
 		ezZoomParameter.max = response.max;
 		ezZoomParameter.min = response.min;
 		ezZoomParameter.step = response.step;
@@ -82,6 +86,14 @@ function updateParameter() {
 		$('#slider').slider('value', ezZoomParameter.defaultZoom);
 	});
 };
+
+function openOptionPage() {
+	chrome.tabs.create({
+		'url': chrome.extension.getURL('option.html')
+	}, function(tab) {
+
+	});
+}
 
 function initPopup() {
 	$("#slider").slider({
@@ -100,6 +112,7 @@ function initPopup() {
 	$("#zoomInBtn").click(onZoomIn);
 	$("#zoomResetBtn").click(onZoomReset);
 	$("#zoomOutBtn").click(onZoomOut);
+	$("#optionBtn").click(openOptionPage);
 	setCurrentTabsZoomLevel();
 	focusInput();
 };

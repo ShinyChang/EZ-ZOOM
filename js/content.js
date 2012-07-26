@@ -34,15 +34,13 @@ var ezZoom = {
 	zoomStep : 10,
 	ezZoomTargetElement : null,
 	sendZoomLevelToBackground : function(level) {
-		chrome.extension.sendRequest({
+		chrome.extension.sendMessage({
 			method : "setZoomLevel",
 			key : level
-		}, function(response) {
-			// do nothing
 		});
 	},
 	getZoomLevelFromBackground : function(callback) {
-		chrome.extension.sendRequest({
+		chrome.extension.sendMessage({
 			method : "getZoomLevel"
 		}, function(response) {
 			callback(response.status);
@@ -75,7 +73,7 @@ var ezZoom = {
 		document.getElementsByTagName('html')[0].style.zoom = level + "%";
 	},
 	updateParameter : function() {
-		chrome.extension.sendRequest({
+		chrome.extension.sendMessage({
 			method : "getParameter"
 		}, function(response) {
 		    ezZoom.defaultZoom = response.defaultZoom;
@@ -93,16 +91,14 @@ document.addEventListener("mousedown", function(event) {
 	ezZoom.ezZoomTargetElement = event.srcElement;
 });
 
-chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+chrome.extension.onMessage.addListener(function(obj) {
 	//request from popup (when zoom changed)
-	if(request.method === "setZoomLevel") {
-		ezZoom.setZoomLevelForContent(request.zoomLevel);
+	if(obj.method === "setZoomLevel") {
+		ezZoom.setZoomLevelForContent(obj.zoomLevel);
 		ezZoom.sendZoomLevelToBackground(ezZoom.getZoomLevelFromContent());
-		sendResponse({
-			status : null
-		});
+
 		//request from bg (zoom target)
-	} else if(request.method === "zoomTarget") {
+	} else if(obj.method === "zoomTarget") {
 
 		//35 is magic number
 		var windowWidth = parseInt(window.outerWidth) - 35;
@@ -114,15 +110,12 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 		window.scrollTo(ezZoom.ezZoomTargetElement.offsetLeft * level, ezZoom.ezZoomTargetElement.offsetTop * level);
 		//***this may have some problems***
 
-		sendResponse({
-			status : "ok"
-		});
 		//request from option page (update parameter)
-	} else if(request.method === "updateParameter") {
-	    ezZoom.defaultZoom = request.defaultZoom;
-		ezZoom.max = request.max;
-		ezZoom.min = request.min;
-		ezZoom.zoomStep = request.step;
+	} else if(obj.method === "updateParameter") {
+	    ezZoom.defaultZoom = obj.defaultZoom;
+		ezZoom.max = obj.max;
+		ezZoom.min = obj.min;
+		ezZoom.zoomStep = obj.step;
 	}
 });
 

@@ -33,11 +33,6 @@
 		<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/popup.js"></script>
-		<script type="text/javascript">
-			$(function() {
-				initPopup();
-			});
-		</script>
 	</head>
 	<body>
 		<div id="slider"></div>
@@ -54,10 +49,9 @@
 			<button id="zoomResetBtn" class="btn" >
 				<i class="icon-refresh"></i>
 			</button>
-			<button id="optionBtn" class="btn" onclick="chrome.tabs.create({'url': chrome.extension.getURL('option.html')}, function(tab) {});">
+			<button id="optionBtn" class="btn">
 				<i class="icon-cog"></i>
 			</button>			
 		</div>
-		<div id="debug"></div>
 	</body>
 </html>
