@@ -83,7 +83,6 @@ function updateParameter() {
 		//update slider parameter
 		$('#slider').slider('option', 'max', parseInt(ezZoomParameter.max))
 		$('#slider').slider('option', 'min', parseInt(ezZoomParameter.min))
-		$('#slider').slider('value', ezZoomParameter.defaultZoom);
 	});
 };
 
