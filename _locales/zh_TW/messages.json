@@ -1,0 +1,71 @@
+{
+	"option_page_title":{
+		"message": "功能設定"
+	},
+	"update_information_title": {
+		"message": "更新資訊！"
+	},
+	"update_info_message":{
+		"message": "EZ Zoom可以支援繁體中文、英文兩種語系了。"
+	},
+	"system_parameter_title":{
+		"message": "系統參數"
+	},
+	"default_zoom_size":{
+		"message": "預設縮放比例"
+	},
+	"minimum_zoom_size":{
+		"message": "最小縮放比例"
+	},
+	"maximum_zoom_size":{
+		"message": "最大縮放比例"
+	},
+	"zoom_step":{
+		"message": "每次縮放比例"
+	},
+	"context_menu":{
+		"message": "右鍵選單"
+	},
+	"enable_text":{
+		"message": "開啟"
+	},
+	"save_text":{
+		"message": "儲存變更"
+	},
+	"cancel_text":{
+		"message": "回復預設值"
+	},
+	"hotkeys_title":{
+		"message": "熱鍵"
+	},
+	"zoom_in_text":{
+		"message": "縮小"
+	},
+	"zoom_out_text":{
+		"message": "放大"
+	},
+	"zoom_reset_text":{
+		"message": "回復預設"
+	},
+	"database_title":{
+		"message": "資料庫"
+	},
+	"warning_title":{
+		"message": "警告！"
+	},
+	"warning_message":{
+		"message": "這是離線儲存，無法被同步！"
+	},
+	"domain_text": {
+		"message": "網域"
+	},
+	"zoom_text": {
+		"message": "縮放比例"
+	},
+	"option_text": {
+		"message": "選項"
+	},
+	"back_to_top": {
+		"message": "回到最上"
+	}
+}

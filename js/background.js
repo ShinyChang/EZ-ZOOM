@@ -105,8 +105,8 @@ function destoryContextMenu() {
 //control the version of ezZoom
 function versionControl() {
 	chrome.storage.sync.get("EZZoomVersion", function(o) {
-		if(o.EZZoomVersion !== "1.7.0") {
-			chrome.storage.sync.set({"EZZoomVersion": "1.7.0"});
+		if(o.EZZoomVersion !== "1.7.1") {
+			chrome.storage.sync.set({"EZZoomVersion": "1.7.1"});
 			chrome.storage.sync.remove("updateInfo");
 
 			//default parameter by chrome storage api
@@ -127,7 +127,7 @@ function versionControl() {
 					chrome.storage.sync.set({"contextMenu": "checked"});
 				}
 				if(!obj.updateInfo) {
-					chrome.storage.sync.set({"updateInfo": "Sync system parameter by google storage api!!"});
+					chrome.storage.sync.set({"updateInfo": chrome.i18n.getMessage("update_info_message")});
 				}			
 			});			
 		}

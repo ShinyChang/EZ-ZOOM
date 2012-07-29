@@ -12,6 +12,7 @@ EZ Zoom is a simple Google Chrome extension that allows you to zoom in pages usi
 ---
 - v1.7
   - System parameter sync by google storage api
+  - Support multi-language(en, zh_TW)
 - v1.6
   - Context menu
   - Custom zoom parameter(default, max, min, step)

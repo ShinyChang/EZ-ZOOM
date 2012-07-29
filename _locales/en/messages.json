@@ -1,0 +1,71 @@
+{
+	"option_page_title":{
+		"message": "Option Page"
+	},
+	"update_information_title": {
+		"message": "Update Information!"
+	},
+	"update_info_message":{
+		"message": "EZ Zoom support multi-language(en, zh_TW) now."
+	},	
+	"system_parameter_title":{
+		"message": "System Parameters"
+	},
+	"default_zoom_size":{
+		"message": "Default Zoom Size"
+	},
+	"minimum_zoom_size":{
+		"message": "Minimum Zoom Size"
+	},
+	"maximum_zoom_size":{
+		"message": "Maximum Zoom Size"
+	},
+	"zoom_step":{
+		"message": "Zoom Step"
+	},
+	"context_menu":{
+		"message": "Context Menu"
+	},
+	"enable_text":{
+		"message": "Enable"
+	},
+	"save_text":{
+		"message": "Save changes"
+	},
+	"cancel_text":{
+		"message": "Cancel"
+	},
+	"hotkeys_title":{
+		"message": "Hotkeys"
+	},
+	"zoom_in_text":{
+		"message": "Zoom In"
+	},
+	"zoom_out_text":{
+		"message": "Zoom Out"
+	},
+	"zoom_reset_text":{
+		"message": "Zoom Reset"
+	},
+	"database_title":{
+		"message": "Database"
+	},
+	"warning_title":{
+		"message": "Warning!"
+	},
+	"warning_message":{
+		"message": "This is offline storage. Can not sync."
+	},
+	"domain_text": {
+		"message": "Domain"
+	},
+	"zoom_text": {
+		"message": "Zoom"
+	},
+	"option_text": {
+		"message": "Option"
+	},
+	"back_to_top": {
+		"message": "Back to top"
+	}
+}
