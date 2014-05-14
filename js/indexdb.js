@@ -14,41 +14,29 @@ ezZoom.indexedDB = {};
 ezZoom.indexedDB.db = null;
 
 ezZoom.indexedDB.onerror = function(e) {
-    console.log("EZZOOM indexDB error:" + e);
+    console.log("EZZOOM indexDB error");
+    console.log(e);
 };
 
 ezZoom.indexedDB.open = function() {
-    var request = indexedDB.open("domainZoomLevel");
-
+    console.log('open')
+    var request = indexedDB.open("ezzoom");
     request.onsuccess = function(e) {
-        var v = "1.00";
-        ezZoom.indexedDB.db = e.target.result;
-        var db = ezZoom.indexedDB.db;
-        // We can only create Object stores in a setVersion transaction;
-        if(v != db.version) {
-            var setVrequest = db.setVersion(v);
-
-            // onsuccess is the only place we can create Object Stores
-            setVrequest.onerror = ezZoom.indexedDB.onerror;
-            setVrequest.onsuccess = function(e) {
-                if(db.objectStoreNames.contains("domainZoomLevel")) {
-                    db.deleteObjectStore("domainZoomLevel");
-                }
-
-                var store = db.createObjectStore("domainZoomLevel", null);
-                ezZoom.indexedDB.getAllDomainZoomLevelItems();
-            };
-        } else {
-            ezZoom.indexedDB.getAllDomainZoomLevelItems();
-        }
+        ezZoom.indexedDB.db = request.result;
+        ezZoom.indexedDB.getAllDomainZoomLevelItems();
     };
+    request.onupgradeneeded  = function(e) {
+        var db = e.target.result;
+        db.createObjectStore("ezzoom", null);
+    };
+
     request.onerror = ezZoom.indexedDB.onerror;
 }
 
 ezZoom.indexedDB.addDomainZoomLevel = function(domain, zoomLevel) {
     var db = ezZoom.indexedDB.db;
-    var trans = db.transaction(["domainZoomLevel"], IDBTransaction.READ_WRITE);
-    var store = trans.objectStore("domainZoomLevel");
+    var trans = db.transaction(["ezzoom"], "readwrite");
+    var store = trans.objectStore("ezzoom");
     var request = store.put(zoomLevel, domain);
     request.onsuccess = function(e) {
         ezZoom.indexedDB.getAllDomainZoomLevelItems();
@@ -60,8 +48,9 @@ ezZoom.indexedDB.addDomainZoomLevel = function(domain, zoomLevel) {
 
 ezZoom.indexedDB.deleteDomainZoomLevel = function(id) {
     var db = ezZoom.indexedDB.db;
-    var trans = db.transaction(["domainZoomLevel"], IDBTransaction.READ_WRITE);
-    var store = trans.objectStore("domainZoomLevel");
+
+    var trans = db.transaction(["ezzoom"], "readwrite");
+    var store = trans.objectStore("ezzoom");
     var request = store.delete(id);
     request.onsuccess = function(e) {
         ezZoom.indexedDB.getAllDomainZoomLevelItems();
@@ -75,8 +64,8 @@ ezZoom.indexedDB.getAllDomainZoomLevelItems = function() {
 	$("#domainZoomLevelContainer tbody").html("");	//clear tbody
 
     var db = ezZoom.indexedDB.db;
-    var trans = db.transaction(["domainZoomLevel"], IDBTransaction.READ_WRITE);
-    var store = trans.objectStore("domainZoomLevel");
+    var trans = db.transaction(["ezzoom"], "readwrite");
+    var store = trans.objectStore("ezzoom");
 
     // Get everything in the store;
     var keyRange = IDBKeyRange.lowerBound(0);
@@ -95,8 +84,8 @@ ezZoom.indexedDB.getAllDomainZoomLevelItems = function() {
 
 ezZoom.indexedDB.getDomainZoomLevel = function(domain, callback) {
     var db = ezZoom.indexedDB.db;
-    var trans = db.transaction(["domainZoomLevel"], IDBTransaction.READ_WRITE);
-    var store = trans.objectStore("domainZoomLevel");
+    var trans = db.transaction(["ezzoom"], "readwrite");
+    var store = trans.objectStore("ezzoom");
     var request = store.get(domain);
     request.onsuccess = function(e) {
         callback(e.target.result);

@@ -1,6 +1,6 @@
 {
 	"name": "EZ Zoom",
-	"version": "1.7.1",
+	"version": "1.8.0",
 	"default_locale": "en",
 	"manifest_version": 2,
 	"description": "Press + - * can zoom just like Opera browser.",
@@ -10,9 +10,9 @@
 		"16": "img/icon.png"
 	},
 	"browser_action": {
-		"default_popup": "popup.html",  
+		"default_popup": "popup.html",
 		"default_icon": "img/icon.png"
-	}, 
+	},
 	"content_scripts": [ {
 		"all_frames": true,
 		"js": [ "js/content.js" ],
@@ -28,7 +28,7 @@
 	"permissions": [
 		"storage",
 		"contextMenus",
-		"tabs", 
+		"tabs",
 		"<all_urls>",
 		"unlimitedStorage"
 	]
