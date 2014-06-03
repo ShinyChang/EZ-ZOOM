@@ -15,6 +15,14 @@ document.addEventListener("keydown", function(event) {
 	if(element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') {
 		return;
 	}
+	
+	if (element.contentEditable === 'true') {
+		return;
+	}
+
+	if (event.shiftKey === true) {
+		return;
+	}
 
 	if(event.keyCode == 109 || event.keyCode == 189) {// -
 		ezZoom.setZoomLevelForContent(parseInt(ezZoom.getZoomLevelFromContent()) - parseInt(ezZoom.zoomStep));
