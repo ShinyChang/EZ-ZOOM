@@ -1,6 +1,6 @@
 {
 	"name": "EZ Zoom",
-	"version": "1.8.1",
+	"version": "1.8.3",
 	"default_locale": "en",
 	"manifest_version": 2,
 	"description": "Press + - * can zoom just like Opera browser.",
